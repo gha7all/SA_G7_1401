@@ -1,13 +1,19 @@
 import itertools
+import json
 import os
 import glob
 from pathlib import Path
 import statistics
 from collections import Counter
 
+from Project import Project
+
+
+# def navigate_projects():
+
 
 def main():
-    projects_data = {}
+    projects = []
     all_packages = []
     dataset_path = 'dataset/'
     for project_path in [path for path in Path(dataset_path).iterdir() if path.is_dir()]:
@@ -16,20 +22,29 @@ def main():
                       str(path).lower().endswith(str(f"/{project_name}/").lower())]
         if len(main_paths) > 1:
             main_paths = [main_path for main_path in main_paths if '/src/' in main_path.lower()]
-        packages = [path.name for path in Path(main_paths[0]).iterdir()
+        packages_path = main_paths[0]
+        packages = [path.name for path in Path(packages_path).iterdir()
                     if path.is_dir() and not path.name.startswith(".")]
 
         classes = []
-        for path, subdirs, files in os.walk(main_paths[0]):
+        for path, subdirs, files in os.walk(packages_path):
             classes = classes + [name for name in files if ".java" in name]
 
         if not len(packages) == 0:
-            data = {"classes_count": len(classes), "packages": packages}
+            project = Project(name=project_name, packages_path=packages_path,
+                              classes=classes, packages=packages, dataset_path=dataset_path)
+            projects.append(project)
             all_packages = all_packages + packages
-            projects_data[project_name] = data
-    # calculate_all_jaccard_similarity(projects_data)
-    exclusive_packages_percentage_result = calculate_exclusive_packages(all_packages, projects_data)
-    threshold(exclusive_packages_percentage_result, 0.2)
+    list_to_json([project.get_dict() for project in projects], "metedata_projects")
+    jaccards = (calculate_all_jaccard_similarity(projects))
+    list_to_json(jaccards, "jaccards")
+    # exclusive_packages_percentage_result = calculate_exclusive_packages(all_packages, projects_data)
+    # threshold(exclusive_packages_percentage_result, 0.2)
+
+
+def list_to_json(data, name):
+    json_object = json.dumps(data)
+    open(f"{name}.json", "w").write(json_object)
 
 
 def calculate_exclusive_packages(all_packages, projects_data: dict):
@@ -47,26 +62,24 @@ def calculate_exclusive_packages(all_packages, projects_data: dict):
     return result
 
 
-def calculate_all_jaccard_similarity(projects_data: dict):
-    project_names = list(projects_data.keys())
+def calculate_all_jaccard_similarity(projects_data: [Project]):
+    result = []
+    project_names = [project.name for project in projects_data]
     for project_name_index1 in range(len(project_names)):
-        jaccards = []
-        for project_name_index2 in range(len(project_names)):
+        for project_name_index2 in range(project_name_index1 + 1, len(project_names)):
             jaccard = jaccard_similarity(project_names[project_name_index1],
-                                         projects_data[project_names[project_name_index1]],
+                                         projects_data[project_name_index1].packages,
                                          project_names[project_name_index2],
-                                         projects_data[project_names[project_name_index2]])
-            jaccards.append(jaccard)
-        print(project_names[project_name_index1], statistics.mean(jaccards))
+                                         projects_data[project_name_index2].packages)
+            result.append([project_names[project_name_index1], project_names[project_name_index2], jaccard])
+    return result
 
 
-def jaccard_similarity(project_name1, project_data1, project_name2, project_data2):
-    if project_name1 == project_name2:
+def jaccard_similarity(project1_name, project1_packages, project2_name, project2_packages):
+    if project1_name == project2_name:
         return 1
-    list1 = project_data1["packages"]
-    list2 = project_data2["packages"]
-    intersection = len(list(set(list1).intersection(list2)))
-    union = (len(set(list1)) + len(set(list2))) - intersection
+    intersection = len(list(set(project1_packages).intersection(project2_packages)))
+    union = (len(set(project1_packages)) + len(set(project2_packages))) - intersection
     similarity = float(intersection) / union
     return similarity
 
