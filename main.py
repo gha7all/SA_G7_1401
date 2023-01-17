@@ -122,8 +122,6 @@ def decode_content(content):
 
 def find_relations(variant: str, path: str, packages: list, relation_model_json: dict):
     contents = []
-    info = []
-    couples = {key: 0 for key in packages}
     # info = {key: couples for key in packages}
     for package in packages:
         files_path_list = glob.glob(f"{path}{package}/*.java")
