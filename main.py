@@ -96,6 +96,17 @@ def extract_outliers_by_threshold(exclusive_packages_percentage_results, thresho
             outlier_result.append(project.name)
 
 
+def generate_empty_relations(data):
+    info = {}
+    for item in data:
+        variant = item['name']
+        packages = item['packages']
+        info[variant] = {key: {} for key in packages}
+        for package in packages:
+            info[variant][package] = {key: 0 for key in packages if key!=package}
+            
+    return info
+        
 
 def decode_content(content):
     decoded_content = []
@@ -109,43 +120,42 @@ def decode_content(content):
     return decoded_content
 
 
-def find_relations(variant: str, path: str, packages: list):
+def find_relations(variant: str, path: str, packages: list, relation_model_json: dict):
     contents = []
-    info = {key: 0 for key in packages}
+    info = []
+    couples = {key: 0 for key in packages}
+    # info = {key: couples for key in packages}
     for package in packages:
         files_path_list = glob.glob(f"{path}{package}/*.java")
         for file_path in files_path_list:
             with open(file_path, "rb") as f:
                 contents.extend(decode_content(f.readlines()))
-            for content in contents:
-                if f"{variant.lower()}.{package}" in content:
-                    print(content)
-                    info[package] += 1
-    return info
-            
+            for package_name in packages:
+                for content in contents:
+                    if f"{variant.lower()}.{package_name}" in content and package != package_name:
+                        relation_model_json[variant][package][package_name] += 1
+    return relation_model_json
 
 
 def extract_relations(dataset_path: str, semantics_path: str) -> dict:
     with open(semantics_path, encoding="utf-8") as f:
         data = json.load(f)
+        
+    relation_model_json = generate_empty_relations(data)
 
     for item in data:
         variant = item['name']
         path = item['packages_path']
         packages = item['packages']
-        result = find_relations(variant, path, packages)
-        attributes.append({variant: result})
-    
-    return attributes
-        
-        
+        result = find_relations(variant, path, packages, relation_model_json)
+
+    return result
 
 
 if __name__ == '__main__':
     dataset_path = SOURCE_PATH + '/dataset/'
     semantics_path = SOURCE_PATH + '/semantics.json'
-
-    # # create_metadata_of_projects(dataset_path)
-    # print(extract_relations(dataset_path, semantics_path))
-    extract_relations(dataset_path, semantics_path)
-
+    
+    relations = extract_relations(dataset_path, semantics_path)
+    
+    print(relations)
