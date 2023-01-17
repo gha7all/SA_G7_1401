@@ -1,8 +1,15 @@
 import json
 import os
+import sys
 import glob
 from pathlib import Path
 from collections import Counter
+
+
+SOURCE_PATH = str(
+    str(os.path.realpath(__file__).replace('\\', '/')).split('SA_G7_1401/')[0]) + 'SA_G7_1401'
+if SOURCE_PATH not in sys.path:
+    sys.path.append(SOURCE_PATH)
 
 from Project import Project
 from utils import list_to_json
@@ -84,6 +91,6 @@ def extract_outliers_by_threshold(exclusive_packages_percentage_results, thresho
 
 
 if __name__ == '__main__':
-    dataset_path = 'dataset/'
+    dataset_path = SOURCE_PATH + 'dataset/'
 
     create_metadata_of_projects(dataset_path)
