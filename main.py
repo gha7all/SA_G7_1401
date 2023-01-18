@@ -1,4 +1,4 @@
-from utils import export_json, jaccard_similarity, decode_content, get_all_packages
+from utils import export_json, jaccard_similarity, decode_content, get_all_packages, calculate_all_jaccard_similarity
 from Project import Project
 import json
 import os
@@ -111,12 +111,11 @@ def extract_internal_package_calls(projects: [Project]) -> dict:
     return relation_model_json
 
 
-
 def pipeline():
     projects = load_data()
     # visualize_exclusive_package_line_of_codes(projects)
-    visualize_projects_jaccard(projects)
-"""
+    # visualize_projects_jaccard(projects)
+
     jaccards_similarity_projects = calculate_all_jaccard_similarity(projects)
 
     percentage_of_exclusive_packages = calculate_percentage_of_exclusive_packages(projects)
@@ -130,7 +129,7 @@ def pipeline():
     export_json(projects_map, "semantics", SOURCE_PATH)
     export_json(outliers, "outliers", SOURCE_PATH)
     export_json(internal_package_calls, "internal_package_calls", SOURCE_PATH)
-"""
+
 
 if __name__ == '__main__':
     pipeline()
