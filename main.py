@@ -1,4 +1,4 @@
-from utils import list_to_json
+from utils import export_json, jaccard_similarity, decode_content, get_all_packages
 from Project import Project
 import json
 import os
@@ -7,17 +7,23 @@ import glob
 from pathlib import Path
 from collections import Counter
 
+from visualize_outputs import visualize_projects_jaccard
 
 SOURCE_PATH = str(
     str(os.path.realpath(__file__).replace('\\', '/')).split('SA_G7_1401/')[0]) + 'SA_G7_1401'
 if SOURCE_PATH not in sys.path:
     sys.path.append(SOURCE_PATH)
 
+dataset_path = SOURCE_PATH + '/dataset/'
+semantics_path = SOURCE_PATH + '/semantics.json'
 
-attributes = []
+
+def load_data():
+    projects = metadata_of_projects()
+    return projects
 
 
-def create_metadata_of_projects(dataset_path):
+def metadata_of_projects():
     projects = []
     all_packages = []
     for project_path in [path for path in Path(dataset_path).iterdir() if path.is_dir()]:
@@ -40,18 +46,13 @@ def create_metadata_of_projects(dataset_path):
                               classes=classes, packages=packages, dataset_path=dataset_path)
             projects.append(project)
             all_packages = all_packages + packages
-
-    list_to_json([project.get_dict() for project in projects], "semantics")
-    jaccards = (calculate_all_jaccard_similarity(projects))
-    list_to_json(jaccards, "jaccards")
-    exclusive_packages_percentage_result = calculate_percentage_of__exclusive_packages(
-        all_packages, projects)
-    extract_outliers_by_threshold(exclusive_packages_percentage_result, 0.2)
+    return projects
 
 
-def calculate_percentage_of__exclusive_packages(all_packages, projects: dict):
+def calculate_percentage_of_exclusive_packages(projects: [Project]):
     result = []
-    counter = Counter(all_packages)
+    packages = get_all_packages(projects)
+    counter = Counter(packages)
     exclusive_packages = [k for k, v in counter.items() if v == 1]
     for project in projects:
         exclusives = 0
@@ -60,64 +61,28 @@ def calculate_percentage_of__exclusive_packages(all_packages, projects: dict):
             if package in exclusive_packages:
                 exclusives = exclusives + 1
         result.append((project, float(exclusives) /
-                      float(len(project_packages))))
+                       float(len(project_packages))))
     return result
-
-
-def calculate_all_jaccard_similarity(projects_data: [Project]):
-    result = []
-    project_names = [project.name for project in projects_data]
-    for project_name_index1 in range(len(project_names)):
-        for project_name_index2 in range(project_name_index1 + 1, len(project_names)):
-            jaccard = jaccard_similarity(project_names[project_name_index1],
-                                         projects_data[project_name_index1].packages,
-                                         project_names[project_name_index2],
-                                         projects_data[project_name_index2].packages)
-            result.append([project_names[project_name_index1],
-                          project_names[project_name_index2], jaccard])
-    return result
-
-
-def jaccard_similarity(project1_name, project1_packages, project2_name, project2_packages):
-    if project1_name == project2_name:
-        return 1
-    intersection = len(
-        list(set(project1_packages).intersection(project2_packages)))
-    union = (len(set(project1_packages)) +
-             len(set(project2_packages))) - intersection
-    similarity = float(intersection) / union
-    return similarity
 
 
 def extract_outliers_by_threshold(exclusive_packages_percentage_results, threshold_percentage):
-    outlier_result = []
+    outliers = []
     for project, exclusive_packages_percentage in exclusive_packages_percentage_results:
         if exclusive_packages_percentage > threshold_percentage:
-            outlier_result.append(project.name)
+            outliers.append(project.name)
+    return outliers
 
 
-def generate_empty_relations(data):
+def generate_empty_packages_relations(projects_metadata):
     info = {}
-    for item in data:
-        variant = item['name']
-        packages = item['packages']
+    for project in projects_metadata:
+        variant = project.name
+        packages = project.packages
         info[variant] = {key: {} for key in packages}
         for package in packages:
-            info[variant][package] = {key: 0 for key in packages if key!=package}
-            
-    return info
-        
+            info[variant][package] = {key: 0 for key in packages if key != package}
 
-def decode_content(content):
-    decoded_content = []
-    for line in content:
-        try:
-            decoded_line = line.decode("utf-8").strip().lower()
-            if 'import' in decoded_line:
-                decoded_content.append(decoded_line)
-        except:
-            pass
-    return decoded_content
+    return info
 
 
 def find_relations(variant: str, path: str, packages: list, relation_model_json: dict):
@@ -135,25 +100,37 @@ def find_relations(variant: str, path: str, packages: list, relation_model_json:
     return relation_model_json
 
 
-def extract_relations(dataset_path: str, semantics_path: str) -> dict:
-    with open(semantics_path, encoding="utf-8") as f:
-        data = json.load(f)
-        
-    relation_model_json = generate_empty_relations(data)
+def extract_internal_package_calls(projects: [Project]) -> dict:
+    relation_model_json = generate_empty_packages_relations(projects)
+    for project in projects:
+        variant = project.name
+        path = project.packages_path
+        packages = project.packages
+        relation_model_json = find_relations(variant, path, packages, relation_model_json)
 
-    for item in data:
-        variant = item['name']
-        path = item['packages_path']
-        packages = item['packages']
-        result = find_relations(variant, path, packages, relation_model_json)
+    return relation_model_json
 
-    return result
 
+
+def pipeline():
+    projects = load_data()
+    # visualize_exclusive_package_line_of_codes(projects)
+    visualize_projects_jaccard(projects)
+"""
+    jaccards_similarity_projects = calculate_all_jaccard_similarity(projects)
+
+    percentage_of_exclusive_packages = calculate_percentage_of_exclusive_packages(projects)
+
+    outliers = extract_outliers_by_threshold(percentage_of_exclusive_packages, 0.2)
+
+    internal_package_calls = extract_internal_package_calls(projects)
+
+    projects_map = [project.get_dict() for project in projects]
+    export_json(jaccards_similarity_projects, "jaccards", SOURCE_PATH)
+    export_json(projects_map, "semantics", SOURCE_PATH)
+    export_json(outliers, "outliers", SOURCE_PATH)
+    export_json(internal_package_calls, "internal_package_calls", SOURCE_PATH)
+"""
 
 if __name__ == '__main__':
-    dataset_path = SOURCE_PATH + '/dataset/'
-    semantics_path = SOURCE_PATH + '/semantics.json'
-    
-    relations = extract_relations(dataset_path, semantics_path)
-    
-    print(relations)
+    pipeline()
