@@ -38,8 +38,6 @@ def create_metadata_of_projects(dataset_path):
     extract_outliers_by_threshold(exclusive_packages_percentage_result, 0.2)
 
 
-
-
 def calculate_percentage_of__exclusive_packages(all_packages, projects: dict):
     result = []
     counter = Counter(all_packages)
