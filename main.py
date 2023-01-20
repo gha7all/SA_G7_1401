@@ -1,3 +1,4 @@
+from metrics import ssc, rsc
 from utils import export_json, jaccard_similarity, decode_content, get_all_packages, calculate_all_jaccard_similarity
 from Project import Project
 import json
@@ -113,6 +114,7 @@ def extract_internal_package_calls(projects: [Project]) -> dict:
 
 def pipeline():
     projects = load_data()
+    ssc(projects)
     # visualize_exclusive_package_line_of_codes(projects)
     # visualize_projects_jaccard(projects)
 
@@ -123,6 +125,8 @@ def pipeline():
     outliers = extract_outliers_by_threshold(percentage_of_exclusive_packages, 0.2)
 
     internal_package_calls = extract_internal_package_calls(projects)
+
+    rsc(internal_package_calls)
 
     projects_map = [project.get_dict() for project in projects]
     export_json(jaccards_similarity_projects, "jaccards", SOURCE_PATH)
