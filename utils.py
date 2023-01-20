@@ -1,8 +1,13 @@
 import glob
 import json
 from collections import Counter
+from Project import Project
+import matplotlib.pyplot as plt
+import numpy as np
+import networkx as nx
 
 from Project import Project
+from typing import List
 
 
 def export_json(data, name, source_path):
@@ -44,7 +49,7 @@ def lines_of_code_project(project: Project):
     return lines_of_code
 
 
-def exclusive_packages_count(project: Project, packages: [str]):
+def exclusive_packages_count(project: Project, packages: List[str]):
     exclusives_count = 0
     counter = Counter(packages)
     exclusive_packages = [k for k, v in counter.items() if v == 1]
@@ -54,7 +59,7 @@ def exclusive_packages_count(project: Project, packages: [str]):
     return exclusives_count
 
 
-def get_all_packages(projects: [Project]):
+def get_all_packages(projects: List[Project]):
     packages = []
     for project in projects:
         packages += project.packages
@@ -62,7 +67,7 @@ def get_all_packages(projects: [Project]):
     return list(set(packages))
 
 
-def calculate_all_jaccard_similarity(projects_data: [Project]):
+def calculate_all_jaccard_similarity(projects_data: List[Project]):
     result = []
     project_names = [project.name for project in projects_data]
     for project_name_index1 in range(len(project_names)):
@@ -74,3 +79,53 @@ def calculate_all_jaccard_similarity(projects_data: [Project]):
             result.append((project_names[project_name_index1],
                            project_names[project_name_index2], jaccard))
     return result
+
+
+def visualize_exclusive_package_line_of_codes(projects: List[Project]):
+    lines_of_codes = []
+    exclusive_packages_counts = []
+
+    packages = get_all_packages(projects)
+    for project in projects:
+        lines_of_codes.append(lines_of_code_project(project))
+        exclusive_packages_counts.append(
+            exclusive_packages_count(project, packages))
+
+    x_points = np.array(lines_of_codes)
+    y_points = np.array(exclusive_packages_counts)
+
+    plt.xlabel("Lines of Code")
+    plt.ylabel("Exclusive Packages")
+
+    plt.plot(x_points, y_points, 'o')
+    plt.show()
+
+
+def visualize_projects_jaccard(projects: List[Project]):
+    G = nx.Graph()
+    jaccards = calculate_all_jaccard_similarity(projects)
+    print(len(jaccards))
+    G.add_weighted_edges_from(jaccards)
+    population = {}
+    for project in projects:
+        population[project.name] = lines_of_code_project(project)
+
+    for i in list(G.nodes()):
+        G.nodes[i]['population'] = population[i]
+
+    plt.figure(figsize=(10, 7))
+
+    node_size = [0.2 * nx.get_node_attributes(G, 'population')[v] for v in G]
+    # size of node is a list of population of cities
+
+    edge_width = [5 * G[u][v]['weight'] for u, v in G.edges()]
+    # width of edge is a list of weight of edges
+
+    nx.draw_networkx(G, node_size=node_size, alpha=0.7,
+                     with_labels=True, width=edge_width,
+                     edge_color='.4', cmap=plt.cm.Blues)
+
+    plt.axis('off')
+    plt.tight_layout()
+
+    plt.savefig("filename.png")
