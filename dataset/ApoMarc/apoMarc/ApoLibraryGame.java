@@ -1,28 +1,40 @@
-package apoMarc;
+package org.apogames;
 
-import org.apogames.ApoDisplayConfiguration;
 import org.apogames.ApoScreen;
 import org.apogames.ApoSubGame;
 
-import apoMarc.game.ApoMarcPanel;
 
+/**
+ * Spielstartklasse
+ * @author Dirk Aporius
+ *
+ */
 public final class ApoLibraryGame extends Thread {
 
-    /* SubGame IDs */
+    /** SubGame ID für das Spiel */
     public static final int GAME = 0;
+    /** SubGame ID fürs Beenden des Spiels */
     public static final int EXIT = -1;
 
+    /** nächstes SubGame wird mit dieser Variable gesetzt */
     private int nextGameID = ApoLibraryGame.GAME;
-    private ApoDisplayConfiguration displayConfiguration = null;
+    /** Screenobjekt des Spiel */
     private ApoScreen screen = null;
+    
+    private final ApoSubGame game;
 
-    public ApoLibraryGame(String title, ApoDisplayConfiguration displayConfiguration) {
+    /**
+     * Konstruktor
+     * @param title : Titel des Spiels
+     * @param displayConfiguration : Displaykonfigurationen
+     */
+    public ApoLibraryGame(final ApoSubGame game) {
         super();
-        this.displayConfiguration = displayConfiguration;
-        this.screen = new ApoScreen(title, displayConfiguration);
+        this.game = game;
+        this.screen = this.game.getScreen();//new ApoScreen(title, displayConfiguration);
     }
 
-    /* Game starts here */
+    /** Spiel startet hier */
     @Override
     public void run() {
         while (this.nextGameID != -1) {
@@ -40,18 +52,23 @@ public final class ApoLibraryGame extends Thread {
         }
     }
     
+    /**
+     * gibt den eigentlichen Screen des Spiels zurück
+     * @return gibt den eigentlichen Screen des Spiels zurück
+     */
     public final ApoScreen getScreen() {
     	return this.screen;
     }
 
-    public final ApoDisplayConfiguration getDisplayConfiguration() {
-		return this.displayConfiguration;
-	}
-
-	/* SubGame selection */
+	/**
+	 * mit dieser Methode kann zwischen den einzelnen Subgames hin und hergeschaltet werden
+	 * @param gameID : GameID für das jeweilige SubGameObjekt
+	 * @return das neue SubGameObjekt
+	 * @throws InterruptedException
+	 */
     private ApoSubGame selectGame(int gameID) throws InterruptedException {
         switch (gameID) {
-            case ApoLibraryGame.GAME:	return new ApoMarcPanel(this.screen);
+            case ApoLibraryGame.GAME:	return this.game;
             default:					return null;
         }
     }
