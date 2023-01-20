@@ -3,10 +3,13 @@
     "name": "ApoBot",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoBot/apoBot/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoBot",
-    "classes_count": 15,
+    "classes_count": 48,
     "packages": [
+      "sound",
       "level",
       "game",
+      "image",
+      "help",
       "entity"
     ]
   },
@@ -14,41 +17,32 @@
     "name": "ApoSkunkman",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSkunkman/apoSkunkman/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSkunkman",
-    "classes_count": 52,
+    "classes_count": 76,
     "packages": [
       "ai",
       "level",
       "debug",
       "game",
+      "input",
+      "help",
       "replay",
-      "entity"
+      "entity",
+      "images"
     ]
   },
   {
     "name": "ApoRelax",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoRelax/apoRelax/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoRelax",
-    "classes_count": 21,
+    "classes_count": 56,
     "packages": [
+      "sound",
       "level",
       "game",
+      "image",
+      "input",
+      "help",
       "entity"
-    ]
-  },
-  {
-    "name": "BitsEngine",
-    "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/BitsEngine/src/net/gliblybits/bitsengine/",
-    "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/BitsEngine",
-    "classes_count": 57,
-    "packages": [
-      "io",
-      "sound",
-      "render",
-      "gui",
-      "graphics",
-      "core",
-      "utils",
-      "input"
     ]
   },
   {
@@ -80,10 +74,13 @@
     "name": "ApoIcarus",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoIcarus/ApoIcarus/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoIcarus",
-    "classes_count": 28,
+    "classes_count": 59,
     "packages": [
       "level",
       "game",
+      "image",
+      "input",
+      "help",
       "entity"
     ]
   },
@@ -91,11 +88,14 @@
     "name": "ApoStarz",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoStarz/apoStarz/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoStarz",
-    "classes_count": 18,
+    "classes_count": 49,
     "packages": [
+      "sound",
       "level",
       "solver",
       "game",
+      "image",
+      "help",
       "editor",
       "entity"
     ]
@@ -104,21 +104,38 @@
     "name": "ApoImp",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoImp/apoImp/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoImp",
-    "classes_count": 20,
+    "classes_count": 59,
     "packages": [
+      "sound",
       "game",
+      "image",
+      "input",
+      "help",
       "editor",
       "entity"
+    ]
+  },
+  {
+    "name": "TutorVolley",
+    "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/TutorVolley/tutorVolley/",
+    "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/TutorVolley",
+    "classes_count": 15,
+    "packages": [
+      "player"
     ]
   },
   {
     "name": "ApoNotSoSimple",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoNotSoSimple/apoNotSoSimple/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoNotSoSimple",
-    "classes_count": 21,
+    "classes_count": 57,
     "packages": [
+      "sound",
       "level",
       "game",
+      "image",
+      "input",
+      "help",
       "entity"
     ]
   },
@@ -126,10 +143,14 @@
     "name": "ApoSoccer",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSoccer/apoSoccer/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSoccer",
-    "classes_count": 42,
+    "classes_count": 76,
     "packages": [
+      "speech",
+      "sound",
       "analysis",
       "game",
+      "image",
+      "help",
       "entityForAI",
       "entity"
     ]
@@ -162,34 +183,45 @@
     "name": "ApoSimpleSudoku",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSimpleSudoku/apoSimpleSudoku/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSimpleSudoku",
-    "classes_count": 19,
+    "classes_count": 43,
     "packages": [
       "level",
       "game",
-      "entity"
+      "input",
+      "help",
+      "entity",
+      "images"
     ]
   },
   {
     "name": "ApoSlitherLink",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSlitherLink/apoSlitherLink/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSlitherLink",
-    "classes_count": 23,
+    "classes_count": 62,
     "packages": [
+      "sound",
       "level",
-      "game"
+      "game",
+      "image",
+      "help",
+      "entity"
     ]
   },
   {
     "name": "ApoSimple",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSimple/apoSimple/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoSimple",
-    "classes_count": 73,
+    "classes_count": 112,
     "packages": [
+      "sound",
       "game",
+      "image",
       "hiddenFun",
+      "input",
       "oneButton",
       "bubble",
       "hiddenPush",
+      "help",
       "entity",
       "puzzle"
     ]
@@ -198,9 +230,14 @@
     "name": "ApoMarc",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoMarc/apoMarc/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoMarc",
-    "classes_count": 22,
+    "classes_count": 59,
     "packages": [
+      "sound",
       "game",
+      "image",
+      "input",
+      "help",
+      "subgame",
       "entity"
     ]
   },
@@ -208,11 +245,15 @@
     "name": "ApoCommando",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoCommando/apoCommando/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoCommando",
-    "classes_count": 37,
+    "classes_count": 72,
     "packages": [
+      "sound",
       "level",
       "game",
       "panels",
+      "image",
+      "input",
+      "help",
       "entity"
     ]
   },
@@ -233,10 +274,13 @@
     "name": "ApoIcejump",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoIcejump/apoIcejump/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoIcejump",
-    "classes_count": 38,
+    "classes_count": 76,
     "packages": [
+      "sound",
       "ai",
       "game",
+      "image",
+      "help",
       "entity"
     ]
   },
@@ -244,9 +288,14 @@
     "name": "ApoPongBeat",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoPongBeat/apoPongBeat/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoPongBeat",
-    "classes_count": 23,
+    "classes_count": 79,
     "packages": [
+      "sound",
+      "network",
       "game",
+      "image",
+      "input",
+      "help",
       "entity"
     ]
   },
@@ -254,12 +303,14 @@
     "name": "ApoMario",
     "packages_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoMario/apoMario/",
     "project_path": "/home/koalamin/PycharmProjects/SA_G7_1401/dataset/ApoMario",
-    "classes_count": 69,
+    "classes_count": 106,
     "packages": [
+      "sound",
       "ai",
       "level",
       "analysis",
       "game",
+      "image",
       "help",
       "entity"
     ]
