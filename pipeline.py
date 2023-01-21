@@ -32,8 +32,8 @@ class Pipeline:
         export_json(projects_map, "semantics", source_path=source_path)
         export_json(internal_package_calls, "internal_package_calls", source_path=source_path)
 
-        visualize_exclusive_package_line_of_codes(self.projects, "exclusive_package_line_of_codes")
-        visualize_projects_jaccard(self.projects, "jaccard")
+        visualize_exclusive_package_line_of_codes(self.projects)
+        visualize_projects_jaccard(self.projects)
 
         thresholds = [0.0, 0.3, 0.8]
         thresholds_name = ["threshold" + str(threshold) for threshold in thresholds]
@@ -50,8 +50,9 @@ class Pipeline:
             print(
                 f"With Threshold {threshold} ,{len(remain_packages)} remain packages is {remain_packages}")
 
-            metrics_results.append(calculate_metrics(0.0, remain_packages, internal_package_calls, thresholds_name[i]))
-            visualize_matrix(remain_packages, internal_package_calls, thresholds_name[i])
+            updated_projects = self.filter.updated_projects_remove_outlier_package(remain_packages)
 
-        # print(metrics_results)
+            metrics_results.append(calculate_metrics(threshold, updated_projects, internal_package_calls))
+            visualize_matrix(updated_projects, internal_package_calls, thresholds_name[i])
+
         visualize_metrics(metrics_results, "")

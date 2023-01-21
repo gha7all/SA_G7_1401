@@ -56,7 +56,7 @@ class Filter(object):
 
         return packages_frequency
 
-    def extract_remain_packages_by_threshold(self, packages_frequency:dict, threshold_percentage):
+    def extract_remain_packages_by_threshold(self, packages_frequency: dict, threshold_percentage):
         remain_packages = []
         for package in packages_frequency.keys():
             if float(packages_frequency[package]) >= float(threshold_percentage):
@@ -97,3 +97,11 @@ class Filter(object):
                 variant, path, packages, self.relation_model_json)
 
         return self.relation_model_json
+
+    def updated_projects_remove_outlier_package(self, remain_packages):
+        print(remain_packages)
+        updated_projects = self.projects
+        for project in updated_projects:
+            project.packages = [package for package in project.packages if package in remain_packages]
+
+        return updated_projects

@@ -24,7 +24,7 @@ def calculate_rsc(internal_package_calls: dict):
     return float(intersections) / float(len(calls))
 
 
-def calculate_metrics(threshold, projects: [Project], internal_package_calls: dict, folder_name: str):
+def calculate_metrics(threshold, projects: [Project], internal_package_calls: dict):
     ssc = round(calculate_ssc(projects), 2)
     svc = 1 - ssc
     rsc = round(calculate_rsc(internal_package_calls), 2)
