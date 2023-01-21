@@ -12,8 +12,6 @@ class Filter(object):
     def __init__(self) -> None:
         self.projects = []
         self.all_packages = []
-        self.percentages_results = []
-        self.outliers = []
         self.relation_model = {}
         self.relation_model_json = {}
         self.empty_relation_model = {}
@@ -46,26 +44,24 @@ class Filter(object):
                 self.all_packages = self.all_packages + packages
         return self.projects
 
-    def calculate_percentage_of_exclusive_packages(self, projects: List[Project]):
-        packages = get_all_packages(projects)
-        counter = Counter(packages)
-        exclusive_packages = [k for k, v in counter.items() if v == 1]
+    def calculate_packages_frequency(self, projects: List[Project]):
+        packages = list(set(get_all_packages(projects)))
+        packages_frequency = {packages[i]: 0.0 for i in range(0, len(packages))}
         for project in projects:
-            exclusives = 0
-            project_packages = project.packages
-            for package in project_packages:
-                if package in exclusive_packages:
-                    exclusives = exclusives + 1
-            self.percentages_results.append((project, float(exclusives) /
-                                             float(len(project_packages))))
-        
-        return self.percentages_results
+            for package in project.packages:
+                packages_frequency[package] += 1
 
-    def extract_outliers_by_threshold(self, exclusive_packages_percentage_results, threshold_percentage):
-        for project, exclusive_packages_percentage in exclusive_packages_percentage_results:
-            if exclusive_packages_percentage > threshold_percentage:
-                self.outliers.append(project.name)
-        return self.outliers
+        for package in packages_frequency.keys():
+            packages_frequency[package] = packages_frequency[package] / len(projects)
+
+        return packages_frequency
+
+    def extract_remain_packages_by_threshold(self, packages_frequency:dict, threshold_percentage):
+        remain_packages = []
+        for package in packages_frequency.keys():
+            if float(packages_frequency[package]) >= float(threshold_percentage):
+                remain_packages.append(package)
+        return remain_packages
 
     def generate_empty_packages_relations(self, projects_metadata) -> dict:
         for project in projects_metadata:
@@ -87,7 +83,7 @@ class Filter(object):
                     for content in self.content:
                         if f"{variant.lower()}.{package_name}" in content and package != package_name:
                             relation_model[variant][package][package_name] += 1
-        
+
         self.relation_model_json = relation_model
         return self.relation_model_json
 
