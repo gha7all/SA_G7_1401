@@ -3,11 +3,12 @@ import json
 from collections import Counter
 
 from Project import Project
+from typing import List
 
 
 def export_json(data, name, source_path):
     json_object = json.dumps(data)
-    open(source_path + f"/outputs/{name}.json", "w").write(json_object)
+    open(source_path + f"{name}.json", "w").write(json_object)
 
 
 def jaccard_similarity(project1_name, project1_packages, project2_name, project2_packages):
@@ -44,7 +45,7 @@ def lines_of_code_project(project: Project):
     return lines_of_code
 
 
-def exclusive_packages_count(project: Project, packages: [str]):
+def exclusive_packages_count(project: Project, packages: List[str]):
     exclusives_count = 0
     counter = Counter(packages)
     exclusive_packages = [k for k, v in counter.items() if v == 1]
@@ -54,15 +55,15 @@ def exclusive_packages_count(project: Project, packages: [str]):
     return exclusives_count
 
 
-def get_all_packages(projects: [Project]):
+def get_all_packages(projects: List[Project]):
     packages = []
     for project in projects:
         packages += project.packages
 
-    return list(set(packages))
+    return list(packages)
 
 
-def calculate_all_jaccard_similarity(projects_data: [Project]):
+def calculate_all_jaccard_similarity(projects_data: List[Project]):
     result = []
     project_names = [project.name for project in projects_data]
     for project_name_index1 in range(len(project_names)):
@@ -74,3 +75,6 @@ def calculate_all_jaccard_similarity(projects_data: [Project]):
             result.append((project_names[project_name_index1],
                            project_names[project_name_index2], jaccard))
     return result
+
+
+
