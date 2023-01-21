@@ -8,7 +8,7 @@ import networkx as nx
 from utils import *
 
 
-def visualize_projects_jaccard(projects: List[Project], folder_name: str):
+def visualize_projects_jaccard(projects: List[Project]):
     import matplotlib.pyplot as plt
     G = nx.Graph()
     jaccards = calculate_all_jaccard_similarity(projects)
@@ -33,11 +33,11 @@ def visualize_projects_jaccard(projects: List[Project], folder_name: str):
     plt.axis('off')
     plt.tight_layout()
 
-    plt.savefig(f"outputs/{folder_name}/jaccard.png")
+    plt.savefig(f"outputs/jaccard.png")
     plt.pause(0.1)
 
 
-def visualize_exclusive_package_line_of_codes(projects: List[Project], folder_name: str):
+def visualize_exclusive_package_line_of_codes(projects: List[Project]):
     import matplotlib.pyplot as plt
     lines_of_codes = []
     exclusive_packages_counts = []
@@ -55,12 +55,12 @@ def visualize_exclusive_package_line_of_codes(projects: List[Project], folder_na
     plt.ylabel("Exclusive Packages")
 
     plt.plot(x_points, y_points, 'o')
-    plt.savefig(f"outputs/{folder_name}/exclusive_line_of_codes.png")
+    plt.savefig(f"outputs/exclusive_line_of_codes.png")
     plt.pause(0.1)
 
 
-def visualize_matrix(remain_packages, internal_package_calls, folder_name: str):
-    packages = remain_packages
+def visualize_matrix(projects, internal_package_calls, folder_name: str):
+    packages = list(set(get_all_packages(projects)))
     packages.sort()
     apps = []
     for app in internal_package_calls:
