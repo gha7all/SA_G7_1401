@@ -8,7 +8,7 @@ import networkx as nx
 from utils import *
 
 
-def visualize_projects_jaccard(projects: List[Project]):
+def visualize_projects_jaccard(projects: List[Project], file_name: str):
     import matplotlib.pyplot as plt
     G = nx.Graph()
     jaccards = calculate_all_jaccard_similarity(projects)
@@ -33,11 +33,11 @@ def visualize_projects_jaccard(projects: List[Project]):
     plt.axis('off')
     plt.tight_layout()
 
-    plt.savefig(f"outputs/jaccard.png")
+    plt.savefig(f"outputs/{file_name}/jaccard.png")
     plt.pause(0.1)
 
 
-def visualize_exclusive_package_line_of_codes(projects: List[Project]):
+def visualize_exclusive_package_line_of_codes(projects: List[Project], file_name: str):
     import matplotlib.pyplot as plt
     lines_of_codes = []
     exclusive_packages_counts = []
@@ -55,7 +55,7 @@ def visualize_exclusive_package_line_of_codes(projects: List[Project]):
     plt.ylabel("Exclusive Packages")
 
     plt.plot(x_points, y_points, 'o')
-    plt.savefig(f"outputs/exclusive_line_of_codes.png")
+    plt.savefig(f"outputs/{file_name}/exclusive_line_of_codes.png")
     plt.pause(0.1)
 
 
@@ -99,10 +99,11 @@ def visualize_matrix(projects, internal_package_calls, folder_name: str):
 
     df = pd.DataFrame(matrix)
     df = df.transpose()
-    fig = plt.figure(figsize=(30, 15))
+    fig = plt.figure(figsize=(30, 15), dpi=50)
     ax = fig.add_subplot()
     ax.axis('off')
     ax.axis('tight')
+    # plt.figure(figsize=(30, 1), dpi=100)
     ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center', colLoc='center',
              cellColours=colors, rowLabels=df.columns, )
     plt.savefig(f"outputs/{folder_name}/lattice.png")
@@ -114,5 +115,5 @@ def visualize_metrics(results: [dict], folder_name: str):
     ax.xaxis.set_visible(False)  # hide the x axis
     ax.yaxis.set_visible(False)  # hide the y axis
 
-    dfi.export(pd.DataFrame.from_dict(results), f'outputs{folder_name}/metrics.png')
+    dfi.export(pd.DataFrame.from_dict(results), f'outputs{folder_name}/metrics.png', dpi=200)
     plt.pause(0.1)
