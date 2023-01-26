@@ -19,9 +19,9 @@ We used Apo-Games variants as input and analyzed their packages and created a
 metadata of variants.
 
 ### Evaluation Metrics
-<B>SSC:</B>Structure similarity coefficient
-<B>SVC:</B>Structure variability coefficient
-<B>RSC:</B>Relation similarity coefficient
+<B>SSC:</B>Structure similarity coefficient <br>
+<B>SVC:</B>Structure variability coefficient<br>
+<B>RSC:</B>Relation similarity coefficient<br>
 <B>RVC:</B>Relation variability coefficient
 
 ## How to Run
