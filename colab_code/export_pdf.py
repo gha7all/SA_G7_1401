@@ -40,10 +40,10 @@ class PDF(FPDF):
             self.image(images[2], 0, 170, 210)
         else:
             self.image(images[0], 30, 30, 150)
-            self.image(images[1], 0, 100, 200)
 
     def print_page(self, images, des):
-        print("printing page")
+        print("print_page")
+        # Generates the report
         self.add_page()
         self.page_body(images, des)
 
@@ -60,7 +60,7 @@ def construct(PLOT_DIR='outputs'):
     return pages_data
 
 
-def export_pdf(meta_data_of_results: [dict], metrics_image_path, lattis_image_path):
+def export_pdf(meta_data_of_results: [dict], metrics_image_path):
     pdf = PDF(format=(220, 400))
 
     for result in meta_data_of_results:
@@ -68,6 +68,6 @@ def export_pdf(meta_data_of_results: [dict], metrics_image_path, lattis_image_pa
                   isfile(join(result["threshold_output_path"], f))]
         pdf.print_page(images, result["des"])
 
-    pdf.print_page([metrics_image_path, lattis_image_path], "")
+    pdf.print_page([metrics_image_path], "")
 
-    pdf.output('outputs/Report.pdf', 'F')
+    pdf.output('SalesRepot.pdf', 'F')

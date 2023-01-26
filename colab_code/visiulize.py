@@ -1,31 +1,32 @@
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 import dataframe_image as dfi
-import matplotlib.pyplot as plt
-import lxml
+
 import networkx as nx
 
 from utils import *
 
 
-def visualize_projects_jaccard(projects: List[Project], color: str, file_name: str):
+def visualize_projects_jaccard(projects: List[Project], file_name: str):
+    import matplotlib.pyplot as plt
     G = nx.Graph()
     jaccards = calculate_all_jaccard_similarity(projects)
     G.add_weighted_edges_from(jaccards)
-    node_sizes = {}
+    population = {}
     for project in projects:
-        node_sizes[project.name] = lines_of_code_project(project)
+        population[project.name] = lines_of_code_project(project)
 
-    for node_name in list(G.nodes()):
-        G.nodes[node_name]['node_sizes'] = node_sizes[node_name]
+    for i in list(G.nodes()):
+        G.nodes[i]['population'] = population[i]
 
     plt.figure(figsize=(10, 7))
 
-    node_size = [0.2 * nx.get_node_attributes(G, 'node_sizes')[node] for node in G]
+    node_size = [0.2 * nx.get_node_attributes(G, 'population')[v] for v in G]
 
     edge_width = [5 * G[u][v]['weight'] for u, v in G.edges()]
 
-    nx.draw_networkx(G, node_size=node_size,node_color=color,
+    nx.draw_networkx(G, node_size=node_size, alpha=0.7,
                      with_labels=True, width=edge_width,
                      edge_color='.4', cmap=plt.cm.Blues)
 
@@ -37,6 +38,7 @@ def visualize_projects_jaccard(projects: List[Project], color: str, file_name: s
 
 
 def visualize_exclusive_package_line_of_codes(projects: List[Project], file_name: str):
+    import matplotlib.pyplot as plt
     lines_of_codes = []
     exclusive_packages_counts = []
 
@@ -101,6 +103,7 @@ def visualize_matrix(projects, internal_package_calls, folder_name: str):
     ax = fig.add_subplot()
     ax.axis('off')
     ax.axis('tight')
+    # plt.figure(figsize=(30, 1), dpi=100)
     ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center', colLoc='center',
              cellColours=colors, rowLabels=df.columns, )
     plt.savefig(f"outputs/{folder_name}/lattice.png")
@@ -112,6 +115,5 @@ def visualize_metrics(results: [dict], folder_name: str):
     ax.xaxis.set_visible(False)  # hide the x axis
     ax.yaxis.set_visible(False)  # hide the y axis
 
-    dfi.export(pd.DataFrame.from_dict(results), f'outputs{folder_name}/metrics.png', dpi=200,
-               table_conversion="matplotlib")
+    dfi.export(pd.DataFrame.from_dict(results), f'outputs{folder_name}/metrics.png', dpi=200)
     plt.pause(0.1)

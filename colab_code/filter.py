@@ -1,4 +1,4 @@
-from utils import decode_content, get_all_packages, generate_empty_packages_relations
+from utils import decode_content, get_all_packages
 from Project import Project
 import json
 import os
@@ -12,6 +12,7 @@ class Filter(object):
     def __init__(self) -> None:
         self.projects = []
         self.all_packages = []
+        self.relation_model = {}
         self.relation_model_json = {}
         self.empty_relation_model = {}
         self.content = []
@@ -62,13 +63,15 @@ class Filter(object):
                 remain_packages.append(package)
         return remain_packages
 
-    def updated_projects_remove_outlier_package(self, remain_packages):
-        print(remain_packages)
-        updated_projects = self.projects.copy()
-        for project in updated_projects:
-            project.packages = [package for package in project.packages if package in remain_packages]
-
-        return updated_projects
+    def generate_empty_packages_relations(self, projects_metadata) -> dict:
+        for project in projects_metadata:
+            variant = project.name
+            packages = project.packages
+            self.relation_model[variant] = {key: {} for key in packages}
+            for package in packages:
+                self.relation_model[variant][package] = {
+                    key: 0 for key in packages if key != package}
+        return self.relation_model
 
     def find_relations(self, variant: str, path: str, packages: list, relation_model: dict) -> dict:
         for package in packages:
@@ -85,7 +88,7 @@ class Filter(object):
         return self.relation_model_json
 
     def extract_internal_package_calls(self, projects: List[Project]) -> dict:
-        self.relation_model_json = generate_empty_packages_relations(projects)
+        self.relation_model_json = self.generate_empty_packages_relations(projects)
         for project in projects:
             variant = project.name
             path = project.packages_path
@@ -94,3 +97,11 @@ class Filter(object):
                 variant, path, packages, self.relation_model_json)
 
         return self.relation_model_json
+
+    def updated_projects_remove_outlier_package(self, remain_packages):
+        print(remain_packages)
+        updated_projects = self.projects
+        for project in updated_projects:
+            project.packages = [package for package in project.packages if package in remain_packages]
+
+        return updated_projects

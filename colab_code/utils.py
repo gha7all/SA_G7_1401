@@ -37,12 +37,22 @@ def decode_content(content):
 def lines_of_code_project(project: Project):
     classes_path = []
     for package in project.packages:
-        classes_path += glob.glob(f"{project.packages_path}/{package}/*.java")
+        classes_path += glob.glob(f"{project.packages_path}{package}/*.java")
     lines_of_code = 0
     for class_path in classes_path:
         with open(class_path, "rb") as f:
             lines_of_code += len(f.readlines())
     return lines_of_code
+
+
+def exclusive_packages_count(project: Project, packages: List[str]):
+    exclusives_count = 0
+    counter = Counter(packages)
+    exclusive_packages = [k for k, v in counter.items() if v == 1]
+    for package in project.packages:
+        if package in exclusive_packages:
+            exclusives_count = exclusives_count + 1
+    return exclusives_count
 
 
 def get_all_packages(projects: List[Project]):
@@ -52,15 +62,6 @@ def get_all_packages(projects: List[Project]):
 
     return list(packages)
 
-
-def exclusive_packages_count(project: Project, all_packages: List[str]):
-    exclusives_count = 0
-    counter = Counter(all_packages)
-    exclusive_packages = [k for k, v in counter.items() if v == 1]
-    for package in project.packages:
-        if package in exclusive_packages:
-            exclusives_count = exclusives_count + 1
-    return exclusives_count
 
 def calculate_all_jaccard_similarity(projects_data: List[Project]):
     result = []
@@ -76,13 +77,4 @@ def calculate_all_jaccard_similarity(projects_data: List[Project]):
     return result
 
 
-def generate_empty_packages_relations(projects_metadata) -> dict:
-    relation_model = {}
-    for project in projects_metadata:
-        variant = project.name
-        packages = project.packages
-        relation_model[variant] = {key: {} for key in packages}
-        for package in packages:
-            relation_model[variant][package] = {
-                key: 0 for key in packages if key != package}
-    return relation_model
+
