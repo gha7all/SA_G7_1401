@@ -1,6 +1,5 @@
 from utils import decode_content, get_all_packages
 from Project import Project
-import json
 import os
 import glob
 from pathlib import Path
@@ -18,8 +17,6 @@ class Filter(object):
         self.content = []
         self.dataset_path = None
 
-    def process(self, message):
-        pass
 
     def extract_and_load_metadata(self, dataset_path: str):
         for project_path in [path for path in Path(dataset_path).iterdir() if path.is_dir()]:

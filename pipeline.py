@@ -9,7 +9,6 @@ from visiulize import visualize_projects_jaccard, visualize_exclusive_package_li
 
 class Pipeline:
     def __init__(self) -> None:
-        self.filters = []
         self.filter = Filter()
         self.projects = []
 
