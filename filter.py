@@ -25,6 +25,7 @@ class Filter(object):
             project_name = project_path.name
             main_paths = [path for path in glob.glob(f'{project_path}/*/**/', recursive=True) if
                           str(path).lower().endswith(str(f"/{project_name}/").lower())]
+            print(main_paths)
             if len(main_paths) > 1:
                 main_paths = [
                     main_path for main_path in main_paths if '/src/' in main_path.lower()]
@@ -48,7 +49,7 @@ class Filter(object):
         packages_frequency = {packages[i]: 0.0 for i in range(0, len(packages))}
         for project in projects:
             for package in project.packages:
-                packages_frequency[package] += 1
+                packages_frequency[package] = packages_frequency[package] + 1
 
         for package in packages_frequency.keys():
             packages_frequency[package] = packages_frequency[package] / len(projects)
@@ -63,7 +64,6 @@ class Filter(object):
         return remain_packages
 
     def updated_projects_remove_outlier_package(self, remain_packages):
-        print(remain_packages)
         updated_projects = self.projects.copy()
         for project in updated_projects:
             project.packages = [package for package in project.packages if package in remain_packages]

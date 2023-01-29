@@ -11,17 +11,6 @@ def export_json(data, name, source_path):
     open(source_path + f"{name}.json", "w").write(json_object)
 
 
-def jaccard_similarity(project1_name, project1_packages, project2_name, project2_packages):
-    if project1_name == project2_name:
-        return 1
-    intersection = len(
-        list(set(project1_packages).intersection(project2_packages)))
-    union = (len(set(project1_packages)) +
-             len(set(project2_packages))) - intersection
-    similarity = float(intersection) / union
-    return similarity
-
-
 def decode_content(content):
     decoded_content = []
     for line in content:
@@ -33,6 +22,30 @@ def decode_content(content):
             pass
     return decoded_content
 
+
+def jaccard_similarity(project1_name, project1_packages, project2_name, project2_packages):
+    if project1_name == project2_name:
+        return 1
+    intersection = len(
+        list(set(project1_packages).intersection(project2_packages)))
+    union = (len(set(project1_packages)) +
+             len(set(project2_packages))) - intersection
+    similarity = float(intersection) / union
+    return similarity
+
+
+def calculate_all_jaccard_similarity(projects_data: List[Project]):
+    result = []
+    project_names = [project.name for project in projects_data]
+    for project_name_index1 in range(len(project_names)):
+        for project_name_index2 in range(project_name_index1 + 1, len(project_names)):
+            jaccard = jaccard_similarity(project_names[project_name_index1],
+                                         projects_data[project_name_index1].packages,
+                                         project_names[project_name_index2],
+                                         projects_data[project_name_index2].packages)
+            result.append((project_names[project_name_index1],
+                           project_names[project_name_index2], jaccard))
+    return result
 
 def lines_of_code_project(project: Project):
     classes_path = []
@@ -62,18 +75,6 @@ def exclusive_packages_count(project: Project, all_packages: List[str]):
             exclusives_count = exclusives_count + 1
     return exclusives_count
 
-def calculate_all_jaccard_similarity(projects_data: List[Project]):
-    result = []
-    project_names = [project.name for project in projects_data]
-    for project_name_index1 in range(len(project_names)):
-        for project_name_index2 in range(project_name_index1 + 1, len(project_names)):
-            jaccard = jaccard_similarity(project_names[project_name_index1],
-                                         projects_data[project_name_index1].packages,
-                                         project_names[project_name_index2],
-                                         projects_data[project_name_index2].packages)
-            result.append((project_names[project_name_index1],
-                           project_names[project_name_index2], jaccard))
-    return result
 
 
 def generate_empty_packages_relations(projects_metadata) -> dict:

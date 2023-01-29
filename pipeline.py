@@ -14,7 +14,11 @@ class Pipeline:
         self.filter = Filter()
         self.projects = []
 
+        if not os.path.exists("outputs/"):
+            os.mkdir("outputs/")
+
     def execute(self, data_path, source_path):
+
         self.projects = self.filter.extract_and_load_metadata(data_path)
 
         jaccards_similarity_projects = calculate_all_jaccard_similarity(
@@ -41,9 +45,6 @@ class Pipeline:
         meta_data_of_results = []
         for i, threshold in enumerate(thresholds):
             color = ['tab:purple', 'tab:red', 'tab:green', 'tab:orange', 'tab:olive'][i % 5]
-
-            if not os.path.exists("outputs/"):
-                os.mkdir("outputs/")
 
             if not os.path.exists("outputs/" + thresholds_name[i]):
                 os.mkdir("outputs/" + thresholds_name[i])
