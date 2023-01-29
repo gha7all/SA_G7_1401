@@ -51,8 +51,3 @@ traitlets==5.8.1
 urllib3==1.26.14
 webencodings==0.5.1
 yarl==1.8.2
-dataframe_image==0.1.5
-matplotlib==3.6.2
-networkx==3.0
-numpy==1.23.3
-pandas==1.5.0

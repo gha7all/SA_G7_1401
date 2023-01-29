@@ -1,5 +1,6 @@
 from utils import decode_content, get_all_packages, generate_empty_packages_relations
 from Project import Project
+import json
 import os
 import glob
 from pathlib import Path
@@ -16,13 +17,14 @@ class Filter(object):
         self.content = []
         self.dataset_path = None
 
+    def process(self, message):
+        pass
 
     def extract_and_load_metadata(self, dataset_path: str):
         for project_path in [path for path in Path(dataset_path).iterdir() if path.is_dir()]:
             project_name = project_path.name
             main_paths = [path for path in glob.glob(f'{project_path}/*/**/', recursive=True) if
                           str(path).lower().endswith(str(f"/{project_name}/").lower())]
-            print(main_paths)
             if len(main_paths) > 1:
                 main_paths = [
                     main_path for main_path in main_paths if '/src/' in main_path.lower()]
